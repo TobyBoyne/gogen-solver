@@ -11,7 +11,7 @@ def get_connections(word_list):
 	for word in word_list:
 		for i, c in enumerate(word[:-1]):
 			connections[c].add(word[i + 1])
-			connections[i + 1].add(c)
+			connections[word[i + 1]].add(c)
 
 	return connections
 
