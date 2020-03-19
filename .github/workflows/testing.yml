@@ -28,5 +28,4 @@ jobs:
     - name: Test using pytest
       run: |
         pip install pytest
-        pip install python3-tk
         python -m pytest
