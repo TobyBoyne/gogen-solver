@@ -1,4 +1,4 @@
-import ui
+from ui import single_lowercase_letter
 
 def test_single_lowercase_letter():
 	test_inputs = (
@@ -10,4 +10,4 @@ def test_single_lowercase_letter():
 	)
 
 	for s, expected_output in test_inputs:
-		assert ui.single_lowercase_letter(s) == expected_output
+		assert single_lowercase_letter(s) == expected_output
