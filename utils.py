@@ -14,11 +14,3 @@ def get_connections(word_list):
 			connections[word[i + 1]].add(c)
 
 	return connections
-
-def get_linked_coords(W, H):
-	"""Returns a dictionary of each coordinate in the grid of size (W, H), and the list of all
-	points that are directly linked to that coordinate (vertical, horizontal, diagonal)
-	Converts from a geometrical board to an arbitrarily shape, considering only how adjecent tiles are connected"""
-	linked_coords = set()
-	for (x, y) in product(range(W), range(H)):
-		pass
