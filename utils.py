@@ -14,3 +14,6 @@ def get_connections(word_list):
 			connections[word[i + 1]].add(c)
 
 	return connections
+
+def letter_to_num(letter):
+	return ord(letter) - 97
