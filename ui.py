@@ -33,11 +33,18 @@ class UserInterface(tk.Frame):
 			entry.grid(row=x, column=y)
 
 		# add Entry to allow word list to be entered
+		# and a Scrollbar so that all the words can be seen
 		self.words_entry = tk.Entry(self)
+		scroll = tk.Scrollbar(self)
+
+		scroll.config(command=self.words_entry.xview, orient=tk.HORIZONTAL)
 		self.words_entry.config(font=("Arial", 20),
-						   validate="key",
-						   vcmd=(self.words_entry.register(valid_word_list), '%S'))
+							validate="key",
+							vcmd=(self.words_entry.register(valid_word_list), '%S'),
+							xscrollcommand=scroll.set)
+
 		self.words_entry.grid(columnspan=5, stick=tk.NSEW)
+		scroll.grid(columnspan=5, stick=tk.NSEW)
 
 		# create a Button that will store the solution
 		b = tk.Button(self)
