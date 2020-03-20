@@ -21,6 +21,7 @@ class Board:
 		for (x, y), letter in np.ndenumerate(start_values):
 			if letter:
 				self.tiles[y, x, :] = 0
+				self.tiles[:, :, letter_to_num(letter)] = 0
 				self.tiles[y, x, letter_to_num(letter)] = 1
 
 
@@ -66,16 +67,14 @@ class Board:
 	def check_letters_solved(self):
 		"""Check if any of the letters can only be placed in exactly one tile - if so, that letter is solved
 		Raise an error if the letter cannot be placed in any tile"""
-		for i in range(len(lowercase_letters)):
-			# if the letter can only be placed in exactly one tile
-			letter_board = self.tiles[:, :, i]
-			zero_count = np.count_nonzero(letter_board)
-			if zero_count == 1:
-				y, x = np.argwhere(letter_board)[0]
-				yield x, y, i
+		tile_count = np.count_nonzero(board.tiles,axis=(0, 1))
+		if 0 in tile_count:
+			ValueError(f"The letter(s) {np.argwhere(tile_count==0)} cannot be placed on the grid")
 
-			elif zero_count == 0:
-				raise ValueError(f"The letter {i} cannot be placed on the grid")
+		solved_letters = np.argwhere(tile_count==1)
+		for letter in solved_letters:
+			y, x = np.argwhere(self.tiles[:, :, letter])[0]
+			yield x, y, letter
 
 	def check_tiles_solved(self):
 		"""Check if any of the tiles only have one possible letter that can be placed there
@@ -128,6 +127,6 @@ if __name__ == "__main__":
 	board.check_tiles_solved()
 	print(board.get_adjacent_tiles(1, 0))
 
-	x = np.count_nonzero(board.tiles,axis=2)
+	x = np.count_nonzero(board.tiles,axis=(0, 1))
 	print(x)
 	board.solve(['test'])
