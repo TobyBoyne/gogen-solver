@@ -3,17 +3,14 @@ from utils import lowercase_letters
 import pytest
 
 def test_get_connections():
-	word_list = ['alpha', 'beta']
+	word_list = ['alpa', 'ca']
 	connections = utils.get_connections(word_list)
-	expected_connections = {letter: set() for letter in lowercase_letters}
+	expected_connections = {i: set() for i in range(len(lowercase_letters))}
 	result = {
-		'a': {'l', 'h', 't'},
-		'l': {'a', 'p'},
-		'p': {'l', 'h'},
-		'h': {'p', 'a'},
-		'b': {'e'},
-		'e': {'b', 't'},
-		't': {'e', 'a'}
+		0: {11, 15, 2},
+		11: {0, 15},
+		15: {11, 0},
+		2: {0}
 	}
 	expected_connections.update(result)
 
