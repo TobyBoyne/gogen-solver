@@ -29,31 +29,3 @@ def test_board_typical():
 	board.solve()
 
 	assert np.char.equal(board.solution, expected_solution).all()
-
-def test_board_irregular():
-	"""Test case for a 5x5 board where the given letters are not in the typical tile spaces
-	Taken from http://www.puzzles.grosse.is-a-geek.com/images/gog/puz/hyper/hyper20200319sol.png"""
-	start_values = np.array([
-			['',	'',		'',		'',		''],
-			['q',	'',		'',		'',		'p'],
-			['',	'',		'',		'',		''],
-			['',	'',		'',		'',		''],
-			['',	'',		'n',	'',		'g']
-		])
-
-	word_list = [
-		'rtcw', 'clv', 'qxf', 'voga', 'qsh', 'yjg', 'tbio', 'kun', 'tskyi', 'fue', 'mfj'
-	]
-
-	expected_solution = np.array([
-			['h',	'r',	't',	'c',	'w'],
-			['q',	's',	'b',	'l',	'p'],
-			['x',	'k',	'y',	'i',	'v'],
-			['f',	'u',	'd',	'j',	'o'],
-			['e',	'm',	'n',	'a',	'g']
-		])
-
-	board = Board(start_values, word_list)
-	board.solve()
-
-	assert np.char.equal(board.solution, expected_solution).all()
