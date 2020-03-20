@@ -15,6 +15,8 @@ def valid_word_list(s):
 
 
 class UserInterface(tk.Frame):
+	"""A class for the tkinter user interface for the program, as well as logic for passing the input to
+	the Board class and displaying the solution"""
 	def __init__(self, parent, size, **kwargs):
 		tk.Frame.__init__(self, parent, **kwargs)
 		self.size = size
@@ -65,11 +67,13 @@ class UserInterface(tk.Frame):
 		self.display_solution()
 
 	def display_solution(self):
+		"""Insert solution values into the UI grid"""
 		soln = self.board.solution
 		for c, entry in zip(soln.flat, self.entries):
 			entry.insert(0, c)
 
 if __name__ == "__main__":
 	master = tk.Tk()
+	print(master.title("Gogen Solver"))
 	UserInterface(master, (5, 5)).grid()
 	master.mainloop()

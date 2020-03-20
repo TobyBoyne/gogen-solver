@@ -19,7 +19,10 @@ def get_connections(word_list):
 	return connections
 
 def letter_to_num(letter):
+	"""Returns the distance from 'a' of a character
+	letter_to_num('a') == 0, letter_to_num('y') == 24"""
 	return ord(letter) - 97
 
 def num_to_letter(n):
+	"""Inverse of letter_to_num"""
 	return chr(n + 97)

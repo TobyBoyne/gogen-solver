@@ -94,7 +94,16 @@ class Board:
 		self.solution[y, x] = num_to_letter(i)
 
 	def solve(self):
-		"""	"""
+		"""Solving logic for the board
+		The solver repeats the following steps until no more changes can be made
+		 - use letter_mask to find where remaining letters can be placed to maintain links from word_list
+		 - find either:
+		    a) tiles where only one of the remaining letters can go, or
+		    b) letters that can only go in one of the remaining tiles
+		 - for any newly solved tiles, use the tile_mask so no other letters can be placed there, and that letter
+		     cannot be placed in any other tile
+
+		This method does not return anything - solution is stored as a 2D character array in self.solution"""
 		connections = get_connections(self.word_list)
 		# solved_letters stores only the letter value i
 		# new_solved_letters stores (x, y, i) values
