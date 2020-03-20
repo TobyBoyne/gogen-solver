@@ -23,8 +23,6 @@ class Board:
 				self.tiles[y, x, :] = 0
 				self.tiles[y, x, letter_to_num(letter)] = 1
 
-		print(self.tiles)
-
 
 	def get_adjacent_tiles(self, x, y):
 		"""Returns a set of all adjacent tiles to a given coordinate"""
@@ -66,10 +64,27 @@ class Board:
 
 
 	def check_letters_solved(self):
+		"""Check if any of the letters can only be placed in exactly one tile - if so, that letter is solved
+		Raise an error if the letter cannot be placed in any tile"""
 		for i in range(len(lowercase_letters)):
 			# if the letter can only be placed in exactly one tile
-			if np.count_nonzero(self.tiles[:, :, i]) == 1:
-				yield i
+			letter_board = self.tiles[:, :, i]
+			zero_count = np.count_nonzero(letter_board)
+			if zero_count == 1:
+				y, x = np.argwhere(letter_board)[0]
+				yield x, y, i
+
+			elif zero_count == 0:
+				raise ValueError(f"The letter {i} cannot be placed on the grid")
+
+	def check_tiles_solved(self):
+		"""Check if any of the tiles only have one possible letter that can be placed there
+		Raise an error if any of the tiles cannot have any letter placed there"""
+		letter_count = np.count_nonzero(self.tiles, axis=2)
+		if 0 in letter_count:
+			raise ValueError(f"No letter can be placed at the coordinate(s) {np.argwhere(letter_count==0)}")
+
+		return np.argwhere(letter_count==1)
 
 	def solve(self, word_list):
 		"""	Creates a dictionary where each letter is given a set of possiible	spaces in which it can be placed.
@@ -92,6 +107,7 @@ class Board:
 		# main solving loop - repeat until no more letters have been added
 		while used_letters:
 			pass
+			break
 
 
 
@@ -109,5 +125,9 @@ if __name__ == "__main__":
 	]
 
 	board = Board(start_values)
+	board.check_tiles_solved()
 	print(board.get_adjacent_tiles(1, 0))
+
+	x = np.count_nonzero(board.tiles,axis=2)
+	print(x)
 	board.solve(['test'])
