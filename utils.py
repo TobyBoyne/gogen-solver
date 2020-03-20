@@ -23,5 +23,3 @@ def letter_to_num(letter):
 
 def num_to_letter(n):
 	return chr(n + 97)
-
-print([letter_to_num(c) for c in 'alpaca'])
