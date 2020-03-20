@@ -72,9 +72,9 @@ class Board:
 			ValueError(f"The letter(s) {np.argwhere(tile_count==0)} cannot be placed on the grid")
 
 		solved_letters = np.argwhere(tile_count==1)
-		for letter in solved_letters:
-			y, x = np.argwhere(self.tiles[:, :, letter])[0]
-			yield x, y, letter
+		for i in solved_letters:
+			y, x = np.argwhere(self.tiles[:, :, i])[0]
+			yield x, y, i
 
 	def check_tiles_solved(self):
 		"""Check if any of the tiles only have one possible letter that can be placed there
@@ -83,7 +83,10 @@ class Board:
 		if 0 in letter_count:
 			raise ValueError(f"No letter can be placed at the coordinate(s) {np.argwhere(letter_count==0)}")
 
-		return np.argwhere(letter_count==1)
+		solved_tiles = np.argwhere(letter_count==1)
+		for y, x in solved_tiles:
+			i = np.argwhere(self.tiles[y, x, :])[0]
+			yield x, y, i
 
 	def solve(self, word_list):
 		"""	Creates a dictionary where each letter is given a set of possiible	spaces in which it can be placed.

@@ -17,3 +17,6 @@ def get_connections(word_list):
 
 def letter_to_num(letter):
 	return ord(letter) - 97
+
+def num_to_letter(n):
+	return chr(n + 97)
