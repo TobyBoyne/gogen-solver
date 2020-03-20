@@ -1,7 +1,7 @@
 from itertools import product
 import numpy as np
 
-from utils import get_connections
+from utils import get_connections, lowercase_letters
 
 class Tile:
 	def __init__(self, letter=''):
@@ -24,32 +24,53 @@ class Board:
 
 
 	def get_adjacent_tiles(self, x, y):
-		"""Returns a list of all adjacent tiles to a given coordinate"""
+		"""Returns a set of all adjacent tiles to a given coordinate"""
 		centre_tile = self.tiles[y, x]
 		# ensure that if x or y is 0, then sub_grid will still be properly indexed
 		x_low = x or 1
 		y_low = y or 1
 
 		sub_grid = self.tiles[y_low-1:y+2, x_low-1:x+2]
-		adjacent_tiles = [t for t in sub_grid.flat if t is not centre_tile]
+		adjacent_tiles = {t for t in sub_grid.flat if t is not centre_tile}
 		return adjacent_tiles
 
 	def solve(self, word_list):
-		"""	Creates a dictionary where each letter is given a list of possiible	spaces in which it can be placed.
+		"""	Creates a dictionary where each letter is given a set of possiible	spaces in which it can be placed.
 		A letter with:
 		 - no possible spaces will raise an error
 		 - exactly one possible space will be placed there, and removed from dictionary
 		 Through iteration and deduction, all letters will be placed"""
 		connections = get_connections(word_list)
+		used_letters = []
+		free_coordinates = set()
+		for y, row in enumerate(self.tiles):
+			for x, tile in enumerate(row):
+				if tile.letter:
+					used_letters.append(tile.letter)
+				else:
+					free_coordinates.add((x, y))
+
+		letters = {l : free_coordinates.copy() for l in lowercase_letters if l not in used_letters}
+
+		# main solving loop - repeat until letters dictionary is empty
+		while letters:
+			pass
+
+
 
 if __name__ == "__main__":
 	start_values = np.array([
-		['a',	'2',		'',		'',		'b'],
-		['3',	'',		'5',		'',		''],
-		['',	'4',		'x',	'',		''],
+		['r',	'',		'w',	'',		'y'],
 		['',	'',		'',		'',		''],
-		['c',	'',		'',		'',		'd']
+		['s',	'',		'q',	'',		'n'],
+		['',	'',		'',		'',		''],
+		['p',	'',		'f',	'',		'k']
 	])
+
+	word_list = [
+		'bio', 'deathful', 'drest', 'ghast', 'hades', 'loxes', 'phase', 'quoin', 'sajou', 'unmixed', 'vex'
+	]
 
 	board = Board(start_values)
 	print(board.get_adjacent_tiles(1, 0))
+	board.solve(['test'])
