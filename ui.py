@@ -19,9 +19,8 @@ class UserInterface(tk.Frame):
 		tk.Frame.__init__(self, parent, **kwargs)
 		self.size = size
 
-		# create board attributes to be set after solving begins
+		# create board attribute to be set after solving begins
 		self.board = None
-		self.solution = None
 
 		# add Entry to allow text to be added in grid shape
 		self.entries = []
@@ -54,7 +53,14 @@ class UserInterface(tk.Frame):
 		words = self.words_entry.get().replace(' ', '')
 		word_list = words.split(',')
 
-		return values
+		self.board = Board(values, word_list)
+		self.board.solve()
+		self.display_solution()
+
+	def display_solution(self):
+		soln = self.board.solution
+		for c, entry in zip(soln.flat, self.entries):
+			entry.insert(0, c)
 
 if __name__ == "__main__":
 	master = tk.Tk()
