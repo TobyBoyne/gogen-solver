@@ -25,8 +25,12 @@ class Board:
 
 	def get_adjacent_tiles(self, x, y):
 		"""Returns a list of all adjacent tiles to a given coordinate"""
-		sub_grid = self.tiles[y-1:y+1, x-1:x+1]
 		centre_tile = self.tiles[y, x]
+		# ensure that if x or y is 0, then sub_grid will still be properly indexed
+		x_low = x or 1
+		y_low = y or 1
+
+		sub_grid = self.tiles[y_low-1:y+2, x_low-1:x+2]
 		adjacent_tiles = [t for t in sub_grid.flat if t is not centre_tile]
 		return adjacent_tiles
 
@@ -40,11 +44,12 @@ class Board:
 
 if __name__ == "__main__":
 	start_values = np.array([
-		['a',	'',		'',		'',		'b'],
-		['',	'',		'',		'',		''],
-		['',	'',		'x',	'',		''],
+		['a',	'2',		'',		'',		'b'],
+		['3',	'',		'5',		'',		''],
+		['',	'4',		'x',	'',		''],
 		['',	'',		'',		'',		''],
 		['c',	'',		'',		'',		'd']
 	])
 
 	board = Board(start_values)
+	print(board.get_adjacent_tiles(1, 0))
