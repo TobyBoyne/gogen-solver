@@ -103,6 +103,9 @@ class Board:
 
 		# main solving loop - repeat until each tile has exactly 1 letter
 		while np.count_nonzero(self.tiles) > len(lowercase_letters):
+			# create a copy of self.tiles
+			old_tiles = self.tiles.copy()
+
 			# given the newly added letters, use masks to find where new letters can be placed
 			if new_solved_letters:
 				for x, y, i in new_solved_letters:
@@ -126,6 +129,10 @@ class Board:
 					self.solve_tile(x, y, i)
 					new_solved_letters.add((x, y, i))
 					solved_letters.add(i)
+
+			# if no changes have been made to the array, then the solver must be stuck
+			if np.all(old_tiles == self.tiles):
+				raise RuntimeError("This grid cannot be solved by this program")
 
 		num_array = np.sum(self.tiles * np.arange(25), axis=2)
 		solution = np.empty_like(num_array, dtype=str)
