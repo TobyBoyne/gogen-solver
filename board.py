@@ -13,6 +13,7 @@ class Board:
 	Contains solving logic"""
 	def __init__(self, start_values):
 		h, w = start_values.shape
+		self.start_letters = [l for l in start_values.flat if l]
 
 		self.tiles = np.ones((h, w, len(lowercase_letters)))
 
@@ -37,13 +38,29 @@ class Board:
 
 	def create_letter_mask(self, x, y, letter):
 		"""Creates an AND mask centred around the point (x, y) so that the character stored in letter can
-		only be placed adjacent to(x, y)"""
+		only be placed adjacent to (x, y)
+		Used to apply a link between letters
+		1 values form a 3x3x25 grid"""
 		mask = np.zeros_like(self.tiles)
 		# ensure that if x or y is 0, then index will remain positive
 		x_low = max(x-1, 0)
 		y_low = max(y-1, 0)
 
 		mask[y_low:y+2, x_low:x+2, letter_to_num(letter)] = 1
+		return mask
+
+	def create_tile_mask(self, x, y, letter):
+		"""Creates a NOR mask at point (x, y), so that the tile cannot take on any other letter,
+		and no other tile can take on the letter stored in the tile
+		Used once a tile has been solved
+		1 values form a 1x1x25, and a 5x5x1 grid
+		Value at (x, y, i) must be zero"""
+		mask = np.zeros_like(self.tiles)
+		i = letter_to_num(letter)
+
+		mask[:, :, i] = 1
+		mask[y, x, :] = 1
+		mask[y, x, i] = 0
 		return mask
 
 	def solve(self, word_list):
@@ -53,16 +70,16 @@ class Board:
 		 - exactly one possible space will be placed there, and removed from dictionary
 		 Through iteration and deduction, all letters will be placed"""
 		connections = get_connections(word_list)
-		used_letters = []
-		free_coordinates = set()
-		for y, row in enumerate(self.tiles):
-			for x, tile in enumerate(row):
-				if tile.letter:
-					used_letters.append(tile.letter)
-				else:
-					free_coordinates.add((x, y))
-
-		letters = {l : free_coordinates.copy() for l in lowercase_letters if l not in used_letters}
+		used_letters = [l for l in self.start_letters]
+		# free_coordinates = set()
+		# for y, row in enumerate(self.tiles):
+		# 	for x, tile in enumerate(row):
+		# 		if tile.letter:
+		# 			used_letters.append(tile.letter)
+		# 		else:
+		# 			free_coordinates.add((x, y))
+		#
+		# letters = {l : free_coordinates.copy() for l in lowercase_letters if l not in used_letters}
 
 		# main solving loop - repeat until letters dictionary is empty
 		while letters:
