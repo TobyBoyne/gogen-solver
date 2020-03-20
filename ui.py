@@ -11,13 +11,17 @@ def single_lowercase_letter(s):
 
 def valid_word_list(s):
 	"""Validates word list so that only lowercase letters and commas can be added"""
-	return all(c in lowercase_letters + ',' for c in s)
+	return all(c in lowercase_letters + ', ' for c in s)
 
 
 class UserInterface(tk.Frame):
 	def __init__(self, parent, size, **kwargs):
 		tk.Frame.__init__(self, parent, **kwargs)
 		self.size = size
+
+		# create board attributes to be set after solving begins
+		self.board = None
+		self.solution = None
 
 		# add Entry to allow text to be added in grid shape
 		self.entries = []
@@ -30,11 +34,11 @@ class UserInterface(tk.Frame):
 			entry.grid(row=x, column=y)
 
 		# add Entry to allow word list to be entered
-		words_entry = tk.Entry(self)
-		words_entry.config(font=("Arial", 20),
+		self.words_entry = tk.Entry(self)
+		self.words_entry.config(font=("Arial", 20),
 						   validate="key",
-						   vcmd=(words_entry.register(valid_word_list), '%S'))
-		words_entry.grid(columnspan=5, stick=tk.NSEW)
+						   vcmd=(self.words_entry.register(valid_word_list), '%S'))
+		self.words_entry.grid(columnspan=5, stick=tk.NSEW)
 
 		# create a Button that will store the solution
 		b = tk.Button(self)
@@ -43,9 +47,13 @@ class UserInterface(tk.Frame):
 		b.grid(columnspan=5, sticky=tk.NSEW)
 
 	def read_and_solve(self):
+		"""Get values from grid entried and the words list"""
 		values = np.array([e.get() for e in self.entries])
 		values = values.reshape(self.size)
-		print(values)
+
+		words = self.words_entry.get().replace(' ', '')
+		word_list = words.split(',')
+
 		return values
 
 if __name__ == "__main__":
