@@ -3,24 +3,12 @@ import numpy as np
 
 from utils import get_connections, lowercase_letters
 
-class Tile:
-	def __init__(self, letter=''):
-		self.letter = letter
-		self.children = []
-		self.possible_values = []
-
-
-	def __repr__(self):
-		return f"Tile({self.letter})"
-
 class Board:
 	"""A class to store the letter values of each space as a Tile object. Contains solving logic"""
 	def __init__(self, start_values):
-		self.tiles = np.empty_like(start_values, dtype=object)
+		h, w = start_values.size
 
-		for y, row in enumerate(start_values):
-			for x, value in enumerate(row):
-				self.tiles[y, x] = Tile(value)
+		self.tiles = np.ones((h, w, len(lowercase_letters)))
 
 
 	def get_adjacent_tiles(self, x, y):
