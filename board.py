@@ -37,9 +37,8 @@ class Board:
 	def create_letter_probability_mask(self, coords, j):
 		"""Creates and mask that includes all possible locations of the coordinates of (x, y)"""
 		mask = np.zeros_like(self.tiles)
-		for (x, y) in coords:
+		for (y, x) in coords:
 			mask = np.logical_or(mask, self.create_letter_mask(x, y, j))
-
 		return mask
 
 	def create_tile_mask(self, x, y, i):
@@ -97,7 +96,9 @@ class Board:
 		 - exactly one possible space will be placed there, and removed from dictionary
 		 Through iteration and deduction, all letters will be placed"""
 		connections = get_connections(word_list)
-		solved_letters = self.start_letters
+		# solved_letters stores only the letter value i
+		# new_solved_letters stores (x, y, i) values
+		solved_letters = {letter[2] for letter in self.start_letters}
 		new_solved_letters = self.start_letters
 		# TODO: when there is no certain move, find the letter with the fewest possible positions and determine
 		# - where the next may go
@@ -112,15 +113,21 @@ class Board:
 						self.tiles = np.logical_and(self.tiles, mask)
 
 			else:
-				pass
+				for i in range(len(lowercase_letters)):
+					if i not in solved_letters:
+						coords = np.argwhere(self.tiles[:, :, i])
+						print(i, coords)
+						for j in connections[i]:
+							mask = self.create_letter_probability_mask(coords, j)
+							self.tiles = np.logical_and(self.tiles, mask)
 
 			# check if any tiles can now be solved
 			new_solved_letters = set()
 			for x, y, i in self.check_letters_solved() + self.check_tiles_solved():
-				if (x, y, i) not in solved_letters:
+				if i not in solved_letters:
 					self.solve_tile(x, y, i)
 					new_solved_letters.add((x, y, i))
-					solved_letters.add((x, y, i))
+					solved_letters.add(i)
 			print(new_solved_letters, "\n\n\n")
 		print(self.tiles)
 
