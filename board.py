@@ -1,13 +1,14 @@
 from itertools import chain
 import numpy as np
 
-from utils import get_connections, lowercase_letters, letter_to_num
+from utils import get_connections, lowercase_letters, letter_to_num, num_to_letter
 
 
 class Board:
 	"""A class to store the possible letter values as a 1D array for each space on a 2D grid.
 	Contains solving logic"""
 	def __init__(self, start_values):
+		self.solution = None
 		h, w = start_values.shape
 		self.start_letters = set()
 
@@ -90,33 +91,27 @@ class Board:
 		self.tiles = np.logical_and(self.tiles, mask)
 
 	def solve(self, word_list):
-		"""	Creates a dictionary where each letter is given a set of possiible spaces in which it can be placed.
-		A letter with:
-		 - no possible spaces will raise an error
-		 - exactly one possible space will be placed there, and removed from dictionary
-		 Through iteration and deduction, all letters will be placed"""
+		"""	"""
 		connections = get_connections(word_list)
 		# solved_letters stores only the letter value i
 		# new_solved_letters stores (x, y, i) values
 		solved_letters = {letter[2] for letter in self.start_letters}
 		new_solved_letters = self.start_letters
-		# TODO: when there is no certain move, find the letter with the fewest possible positions and determine
-		# - where the next may go
+
 		# main solving loop - repeat until each tile has exactly 1 letter
 		while np.count_nonzero(self.tiles) > len(lowercase_letters):
 			# given the newly added letters, use masks to find where new letters can be placed
-			# if no new letters were added last iteration, instead find where other letters may go
 			if new_solved_letters:
 				for x, y, i in new_solved_letters:
 					for j in connections[i]:
 						mask = self.create_letter_mask(x, y, j)
 						self.tiles = np.logical_and(self.tiles, mask)
 
+			# if no new letters were added last iteration, instead find where other letters may go
 			else:
 				for i in range(len(lowercase_letters)):
 					if i not in solved_letters:
 						coords = np.argwhere(self.tiles[:, :, i])
-						print(i, coords)
 						for j in connections[i]:
 							mask = self.create_letter_probability_mask(coords, j)
 							self.tiles = np.logical_and(self.tiles, mask)
@@ -128,10 +123,16 @@ class Board:
 					self.solve_tile(x, y, i)
 					new_solved_letters.add((x, y, i))
 					solved_letters.add(i)
-			print(new_solved_letters, "\n\n\n")
-		print(self.tiles)
 
+		# convert 3D array to 2D solution using letters
+		# flatten the array
+		num_array = np.sum(self.tiles * np.arange(25), axis=2)
+		solution = np.empty_like(num_array, dtype=str)
+		for (x, y), i in np.ndenumerate(num_array):
+			solution[y, x] = num_to_letter(i)
 
+		self.solution = solution
+		print(solution)
 
 if __name__ == "__main__":
 	start_values = np.array([
