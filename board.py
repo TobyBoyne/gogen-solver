@@ -127,8 +127,12 @@ class Board:
 					new_solved_letters.add((x, y, i))
 					solved_letters.add(i)
 
-			print(self.solution)
-		print(self.solution)
+		num_array = np.sum(self.tiles * np.arange(25), axis=2)
+		solution = np.empty_like(num_array, dtype=str)
+		for (y, x), i in np.ndenumerate(num_array):
+			solution[y, x] = num_to_letter(i)
+
+		self.solution = solution
 
 if __name__ == "__main__":
 	start_values = np.array([
