@@ -3,6 +3,7 @@ import numpy as np
 
 x = np.array([1, 0, 1])
 y = np.array([0, 1, 1])
+print(np.count_nonzero(x))
 print(x & y)
 
 
@@ -63,6 +64,13 @@ class Board:
 		mask[y, x, i] = 0
 		return mask
 
+
+	def check_letters_solved(self):
+		for i in range(len(lowercase_letters)):
+			# if the letter can only be placed in exactly one tile
+			if np.count_nonzero(self.tiles[:, :, i]) == 1:
+				yield i
+
 	def solve(self, word_list):
 		"""	Creates a dictionary where each letter is given a set of possiible	spaces in which it can be placed.
 		A letter with:
@@ -81,8 +89,8 @@ class Board:
 		#
 		# letters = {l : free_coordinates.copy() for l in lowercase_letters if l not in used_letters}
 
-		# main solving loop - repeat until letters dictionary is empty
-		while letters:
+		# main solving loop - repeat until no more letters have been added
+		while used_letters:
 			pass
 
 
