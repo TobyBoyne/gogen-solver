@@ -1,14 +1,27 @@
 from itertools import product
 import numpy as np
 
-from utils import get_connections, lowercase_letters
+x = np.array([1, 0, 1])
+y = np.array([0, 1, 1])
+print(x & y)
+
+
+from utils import get_connections, lowercase_letters, letter_to_num
 
 class Board:
-	"""A class to store the letter values of each space as a Tile object. Contains solving logic"""
+	"""A class to store the possible letter values as a 1D array for each space on a 2D grid.
+	Contains solving logic"""
 	def __init__(self, start_values):
-		h, w = start_values.size
+		h, w = start_values.shape
 
 		self.tiles = np.ones((h, w, len(lowercase_letters)))
+
+		for (x, y), letter in np.ndenumerate(start_values):
+			if letter:
+				self.tiles[y, x, :] = 0
+				self.tiles[y, x, letter_to_num(letter)] = 1
+
+		print(self.tiles)
 
 
 	def get_adjacent_tiles(self, x, y):
