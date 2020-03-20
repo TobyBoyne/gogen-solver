@@ -61,7 +61,7 @@ class Board:
 	def check_letters_solved(self):
 		"""Check if any of the letters can only be placed in exactly one tile - if so, that letter is solved
 		Raise an error if the letter cannot be placed in any tile"""
-		tile_count = np.count_nonzero(board.tiles,axis=(0, 1))
+		tile_count = np.count_nonzero(self.tiles,axis=(0, 1))
 		if 0 in tile_count:
 			ValueError(f"The letter(s) {np.argwhere(tile_count==0)} cannot be placed on the grid")
 
