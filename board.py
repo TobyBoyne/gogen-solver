@@ -1,4 +1,5 @@
 from itertools import product
+import numpy as np
 
 from utils import get_connections
 
@@ -6,6 +7,7 @@ class Tile:
 	def __init__(self, letter=''):
 		self.letter = letter
 		self.children = []
+		self.possible_values = []
 
 	def add_link(self, other):
 		self.children.append(other)
@@ -26,3 +28,14 @@ class Board:
 
 	def solve(self, word_list):
 		connections = get_connections(word_list)
+
+if __name__ == "__main__":
+	start_values = np.array([
+		['a',	'',		'',		'',		'b'],
+		['',	'',		'',		'',		''],
+		['',	'',		'x',	'',		''],
+		['',	'',		'',		'',		''],
+		['c',	'',		'',		'',		'd']
+	])
+
+	board = Board(start_values)
