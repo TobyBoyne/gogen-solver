@@ -4,7 +4,7 @@ import numpy as np
 x = np.array([1, 0, 1])
 y = np.array([0, 1, 1])
 print(np.count_nonzero(x))
-print(~(x & y))
+print((x & y))
 
 
 from utils import get_connections, lowercase_letters, letter_to_num
@@ -14,27 +14,16 @@ class Board:
 	Contains solving logic"""
 	def __init__(self, start_values):
 		h, w = start_values.shape
-		self.start_letters = [l for l in start_values.flat if l]
+		self.start_letters = []
 
 		self.tiles = np.ones((h, w, len(lowercase_letters)))
 
 		for (x, y), letter in np.ndenumerate(start_values):
 			if letter:
-				self.tiles[y, x, :] = 0
-				self.tiles[:, :, letter_to_num(letter)] = 0
-				self.tiles[y, x, letter_to_num(letter)] = 1
+				i = letter_to_num(letter)
+				self.tiles = np.logical_and(self.tiles, self.create_tile_mask(x, y, i))
+				self.start_letters.append((x, y, i))
 
-
-	def get_adjacent_tiles(self, x, y):
-		"""Returns a set of all adjacent tiles to a given coordinate"""
-		centre_tile = self.tiles[y, x]
-		# ensure that if x or y is 0, then sub_grid will still be properly indexed
-		x_low = x or 1
-		y_low = y or 1
-
-		sub_grid = self.tiles[y_low-1:y+2, x_low-1:x+2]
-		adjacent_tiles = {t for t in sub_grid.flat if t is not centre_tile}
-		return adjacent_tiles
 
 	def create_letter_mask(self, x, y, i):
 		"""Creates an AND mask centred around the point (x, y) so that the character stored in letter can
@@ -99,7 +88,13 @@ class Board:
 
 		# main solving loop - repeat until no more letters have been added
 		while used_letters:
-			break
+			# use masks to find where new letters can be placed
+			for x, y, i in used_letters:
+				mask = self.create_letter_mask(x, y, i)
+				self.tiles = np.logical_and(self.tiles, mask)
+
+			# check if any tiles can now be solved
+
 
 
 
@@ -120,6 +115,4 @@ if __name__ == "__main__":
 	board.check_tiles_solved()
 	print(board.get_adjacent_tiles(1, 0))
 
-	x = np.count_nonzero(board.tiles,axis=(0, 1))
-	print(x)
-	board.solve(['test'])
+	board.solve(word_list)
