@@ -1,5 +1,6 @@
 import utils
 from utils import lowercase_letters
+import pytest
 
 def test_get_connections():
 	word_list = ['alpha', 'beta']
@@ -17,3 +18,10 @@ def test_get_connections():
 	expected_connections.update(result)
 
 	assert connections == expected_connections
+
+def test_letter_to_num():
+	assert utils.letter_to_num('b') == 1
+
+	# test that a numerical input will raise an error
+	with pytest.raises(TypeError):
+		utils.letter_to_num(6)
