@@ -1,13 +1,8 @@
 from itertools import chain
 import numpy as np
 
-x = np.array([1, 0, 1])
-y = np.array([0, 1, 1])
-print(np.count_nonzero(x))
-print((x & y))
-
-
 from utils import get_connections, lowercase_letters, letter_to_num
+
 
 class Board:
 	"""A class to store the possible letter values as a 1D array for each space on a 2D grid.
@@ -98,13 +93,18 @@ class Board:
 		new_solved_letters = self.start_letters
 		# TODO: when there is no certain move, find the letter with the fewest possible positions and determine
 		# - where the next may go
-		# main solving loop - repeat until no more letters have been added
-		while new_solved_letters:
-			# use masks to find where new letters can be placed
-			for x, y, i in new_solved_letters:
-				for j in connections[i]:
-					mask = self.create_letter_mask(x, y, j)
-					self.tiles = np.logical_and(self.tiles, mask)
+		# main solving loop - repeat until each tile has exactly 1 letter
+		while np.count_nonzero(self.tiles) > len(lowercase_letters):
+			# given the newly added letters, use masks to find where new letters can be placed
+			# if no new letters were added last iteration, instead find where other letters may go
+			if new_solved_letters:
+				for x, y, i in new_solved_letters:
+					for j in connections[i]:
+						mask = self.create_letter_mask(x, y, j)
+						self.tiles = np.logical_and(self.tiles, mask)
+
+			else:
+				pass
 
 			# check if any tiles can now be solved
 			new_solved_letters = set()
@@ -132,6 +132,4 @@ if __name__ == "__main__":
 	]
 
 	board = Board(start_values)
-	board.check_tiles_solved()
-
 	board.solve(word_list)
