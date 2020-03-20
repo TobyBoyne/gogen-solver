@@ -7,8 +7,10 @@ from utils import get_connections, lowercase_letters, letter_to_num, num_to_lett
 class Board:
 	"""A class to store the possible letter values as a 1D array for each space on a 2D grid.
 	Contains solving logic"""
-	def __init__(self, start_values):
+	def __init__(self, start_values, word_list, alphabet=lowercase_letters):
 		self.solution = None
+		self.word_list = word_list
+
 		h, w = start_values.shape
 		self.start_letters = set()
 
@@ -90,9 +92,9 @@ class Board:
 		mask = self.create_tile_mask(x, y, i)
 		self.tiles = np.logical_and(self.tiles, mask)
 
-	def solve(self, word_list):
+	def solve(self):
 		"""	"""
-		connections = get_connections(word_list)
+		connections = get_connections(self.word_list)
 		# solved_letters stores only the letter value i
 		# new_solved_letters stores (x, y, i) values
 		solved_letters = {letter[2] for letter in self.start_letters}
@@ -147,5 +149,5 @@ if __name__ == "__main__":
 		'bio', 'deathful', 'drest', 'ghast', 'hades', 'loxes', 'phase', 'quoin', 'sajou', 'unmixed', 'vex'
 	]
 
-	board = Board(start_values)
-	board.solve(word_list)
+	board = Board(start_values, word_list)
+	board.solve()
