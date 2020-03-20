@@ -8,7 +8,7 @@ class Board:
 	"""A class to store the possible letter values as a 1D array for each space on a 2D grid.
 	Contains solving logic"""
 	def __init__(self, start_values, word_list, alphabet=lowercase_letters):
-		self.solution = None
+		self.solution = np.empty_like(start_values)
 		self.word_list = word_list
 
 		h, w = start_values.shape
@@ -16,7 +16,7 @@ class Board:
 
 		self.tiles = np.ones((h, w, len(lowercase_letters)))
 
-		for (x, y), letter in np.ndenumerate(start_values):
+		for (y, x), letter in np.ndenumerate(start_values):
 			if letter:
 				i = letter_to_num(letter)
 				self.solve_tile(x, y, i)
@@ -91,6 +91,7 @@ class Board:
 		"""Show that a single tile is solved by applying the mask"""
 		mask = self.create_tile_mask(x, y, i)
 		self.tiles = np.logical_and(self.tiles, mask)
+		self.solution[y, x] = num_to_letter(i)
 
 	def solve(self):
 		"""	"""
@@ -126,15 +127,8 @@ class Board:
 					new_solved_letters.add((x, y, i))
 					solved_letters.add(i)
 
-		# convert 3D array to 2D solution using letters
-		# flatten the array
-		num_array = np.sum(self.tiles * np.arange(25), axis=2)
-		solution = np.empty_like(num_array, dtype=str)
-		for (x, y), i in np.ndenumerate(num_array):
-			solution[y, x] = num_to_letter(i)
-
-		self.solution = solution
-		print(solution)
+			print(self.solution)
+		print(self.solution)
 
 if __name__ == "__main__":
 	start_values = np.array([
