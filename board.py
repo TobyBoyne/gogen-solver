@@ -21,12 +21,12 @@ class Board:
 		for (x, y), letter in np.ndenumerate(start_values):
 			if letter:
 				i = letter_to_num(letter)
-				self.tiles = np.logical_and(self.tiles, self.create_tile_mask(x, y, i))
+				self.solve_tile(x, y, i)
 				self.start_letters.append((x, y, i))
 
 
-	def create_letter_mask(self, x, y, i):
-		"""Creates an AND mask centred around the point (x, y) so that the character stored in letter can
+	def create_letter_mask(self, x, y, j):
+		"""Creates an AND mask centred around the point (x, y) so that the character stored in j can
 		only be placed adjacent to (x, y)
 		Used to apply a link between letters
 		1 values form a 3x3x25 grid"""
@@ -35,7 +35,7 @@ class Board:
 		x_low = max(x-1, 0)
 		y_low = max(y-1, 0)
 
-		mask[y_low:y+2, x_low:x+2, i] = 1
+		mask[y_low:y+2, x_low:x+2, j] = 1
 		return mask
 
 	def create_tile_mask(self, x, y, i):
@@ -77,6 +77,11 @@ class Board:
 			yield x, y, i
 
 
+	def solve_tile(self, x, y, i):
+		"""Show that a single tile is solved by applying the mask"""
+		mask = self.create_letter_mask(x, y, i)
+		self.tiles = np.logical_and(self.tiles, mask)
+
 	def solve(self, word_list):
 		"""	Creates a dictionary where each letter is given a set of possiible spaces in which it can be placed.
 		A letter with:
@@ -90,8 +95,9 @@ class Board:
 		while used_letters:
 			# use masks to find where new letters can be placed
 			for x, y, i in used_letters:
-				mask = self.create_letter_mask(x, y, i)
-				self.tiles = np.logical_and(self.tiles, mask)
+				for j in connections[i]:
+					mask = self.create_letter_mask(x, y, i)
+					self.tiles = np.logical_and(self.tiles, mask)
 
 			# check if any tiles can now be solved
 
@@ -113,6 +119,5 @@ if __name__ == "__main__":
 
 	board = Board(start_values)
 	board.check_tiles_solved()
-	print(board.get_adjacent_tiles(1, 0))
 
 	board.solve(word_list)
