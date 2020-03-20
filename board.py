@@ -23,8 +23,12 @@ class Board:
 				self.tiles[y, x] = Tile(value)
 
 
-	def get_adjecent_tiles(self):
-		pass
+	def get_adjacent_tiles(self, x, y):
+		"""Returns a list of all adjacent tiles to a given coordinate"""
+		sub_grid = self.tiles[y-1:y+1, x-1:x+1]
+		centre_tile = self.tiles[y, x]
+		adjacent_tiles = [t for t in sub_grid.flat if t is not centre_tile]
+		return adjacent_tiles
 
 	def solve(self, word_list):
 		"""	Creates a dictionary where each letter is given a list of possiible	spaces in which it can be placed.
