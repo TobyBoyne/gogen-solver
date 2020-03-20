@@ -34,6 +34,14 @@ class Board:
 		mask[y_low:y+2, x_low:x+2, j] = 1
 		return mask
 
+	def create_letter_probability_mask(self, coords, j):
+		"""Creates and mask that includes all possible locations of the coordinates of (x, y)"""
+		mask = np.zeros_like(self.tiles)
+		for (x, y) in coords:
+			mask = np.logical_or(mask, self.create_letter_mask(x, y, j))
+
+		return mask
+
 	def create_tile_mask(self, x, y, i):
 		"""Creates an AND mask at point (x, y), so that the tile cannot take on any other letter,
 		and no other tile can take on the letter stored in the tile
