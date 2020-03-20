@@ -35,6 +35,17 @@ class Board:
 		adjacent_tiles = {t for t in sub_grid.flat if t is not centre_tile}
 		return adjacent_tiles
 
+	def create_letter_mask(self, x, y, letter):
+		"""Creates an AND mask centred around the point (x, y) so that the character stored in letter can
+		only be placed adjacent to(x, y)"""
+		mask = np.zeros_like(self.tiles)
+		# ensure that if x or y is 0, then index will remain positive
+		x_low = max(x-1, 0)
+		y_low = max(y-1, 0)
+
+		mask[y_low:y+2, x_low:x+2, letter_to_num(letter)] = 1
+		return mask
+
 	def solve(self, word_list):
 		"""	Creates a dictionary where each letter is given a set of possiible	spaces in which it can be placed.
 		A letter with:
