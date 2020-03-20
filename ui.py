@@ -9,6 +9,11 @@ def single_lowercase_letter(s):
 	"""Validates input in each square so that only one lowercase letter can be added to each Entry"""
 	return len(s) <= 1 and s in lowercase_letters
 
+def valid_word_list(s):
+	"""Validates word list so that only lowercase letters and commas can be added"""
+	return all(c in lowercase_letters + ',' for c in s)
+
+
 class UserInterface(tk.Frame):
 	def __init__(self, parent, size, **kwargs):
 		tk.Frame.__init__(self, parent, **kwargs)
@@ -26,8 +31,9 @@ class UserInterface(tk.Frame):
 
 		# add Entry to allow word list to be entered
 		words_entry = tk.Entry(self)
-		words_entry.config(font=("Arial", 44),
-						   validate="key")
+		words_entry.config(font=("Arial", 20),
+						   validate="key",
+						   vcmd=(words_entry.register(valid_word_list), '%S'))
 		words_entry.grid(columnspan=5, stick=tk.NSEW)
 
 		# create a Button that will store the solution
